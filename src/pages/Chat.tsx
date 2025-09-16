@@ -12,7 +12,6 @@ export default function Chat() {
 
   useEffect(() => {
     if (!user) return;
-
     const fetchConversations = async () => {
       try {
         const data = await getConversations();
@@ -55,7 +54,7 @@ export default function Chat() {
   return (
     <div className="flex h-screen">
       <ChatSidebar conversations={conversations} />
-      <ChatWindow />
+      <ChatWindow currentId= {user?.id}/>
     </div>
   );
 }

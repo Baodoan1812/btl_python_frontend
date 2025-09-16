@@ -2,27 +2,35 @@ import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getMessages, sendMessage } from "../services/message"; // giả sử có API sendMessage
 
-export default function ChatWindow() {
+export default function ChatWindow({ currentId }) {
+  console.log("ChatWindow currentId:", currentId);
   const [searchParams] = useSearchParams();
   const conversationId = searchParams.get("conversationId");
+  const otherName = searchParams.get("otherName");
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-    if (!conversationId) return;
+    if (!conversationId || !currentId) return;
 
     const fetchMessages = async () => {
       try {
         const data = await getMessages(conversationId);
-        setMessages(data);
+        const formatted = data.map((msg) => ({
+          ...msg,
+          isMe: msg.sender === currentId, // true nếu là tin nhắn của mình
+        }));
+
+        setMessages(formatted);
+        console.log("Fetched messages:", formatted);
       } catch (err) {
         console.error("Error fetching messages:", err);
       }
     };
 
     fetchMessages();
-  }, [conversationId]);
+  }, [conversationId, currentId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // chặn reload trang
@@ -32,9 +40,11 @@ export default function ChatWindow() {
     try {
       // Gọi API gửi tin nhắn
       const msg = await sendMessage(Number(conversationId), newMessage);
-
-      // Cập nhật UI ngay lập tức
-      setMessages((prev) => [...prev, msg]);
+      const formatted = {
+        ...msg,
+        isMe: msg.sender === currentId, // luôn check lại
+      };
+      setMessages((prev) => [...prev, formatted]);
       setNewMessage("");
     } catch (err) {
       console.error("Error sending message:", err);
@@ -51,13 +61,20 @@ export default function ChatWindow() {
 
   return (
     <div className="flex-1 flex flex-col h-full bg-white">
-      <div className="p-4 border-b font-bold">Conversation {conversationId}</div>
+      <div className="p-4 border-b font-bold">{otherName}</div>
 
       <div className="flex-1 p-4 overflow-y-auto">
         {messages.map((msg, idx) => (
-          <div key={idx} className="mb-2">
-            <span className="font-semibold">{msg.sender}: </span>
-            <span>{msg.content}</span>
+          <div
+            key={idx}
+            className={`flex mb-2 ${msg.isMe ? "justify-end" : "justify-start"}`}
+          >
+            <div
+              className={`px-3 py-2 rounded-lg max-w-xs ${msg.isMe ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+                }`}
+            >
+              {msg.content}
+            </div>
           </div>
         ))}
       </div>
