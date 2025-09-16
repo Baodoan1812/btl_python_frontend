@@ -2,12 +2,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Chat from "./pages/Chat";
 import Header from "./components/Header";
 import useGetDataUser from "./hooks/useGetDataUser";
 
 function App() {
-  const { user, loading } = useGetDataUser();
-
+  const { user } = useGetDataUser();
+  console.log("App user:", user);
   return (
     <BrowserRouter>
       {/* Header */}
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
     </BrowserRouter>
   );
