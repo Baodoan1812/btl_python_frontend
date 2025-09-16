@@ -13,3 +13,21 @@ export const getConversations = async () => {
     throw err.response?.data || { message: "Failed to fetch conversations" };
   }
 };
+
+// 2. Tạo conversation mới
+export const createConversation = async (otherId) => {
+  try {
+    const res= await chat.post(
+      "/conversations/",
+      { other_id: otherId },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    return res.data; // conversation mới tạo
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to create conversation" };
+  }
+}

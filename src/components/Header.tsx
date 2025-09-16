@@ -14,11 +14,17 @@ export default function Header({ user }) {
       )}
 
       {user && (
-        <span className="text-gray-700">Hello, {user.username}</span>
+        <span>Welcome, {user.username}</span>
+        
       )}
        {!user && (
         <Link to="/register" className="text-blue-600 hover:underline">
           Register
+        </Link>
+      )}
+       {user && (
+        <Link to="/chat" className="text-blue-600 hover:underline">
+          Chat
         </Link>
       )}
 

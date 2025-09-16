@@ -21,3 +21,15 @@ export const getUserDetail= async(userId)=>{
     throw err.response?.data || { message: "Get user detail failed" };
   }
 }
+export const getUsers= async()=>{
+  try {
+    const res = await api.get(`/users/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return res.data; // trả về data từ server
+  } catch (err) {
+    throw err.response?.data || { message: "Get users failed" };
+  }
+}

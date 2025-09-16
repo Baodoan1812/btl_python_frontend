@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Chat from "./pages/Chat";
 import Header from "./components/Header";
 import useGetDataUser from "./hooks/useGetDataUser";
+import UserDetail from "./pages/UserDetail";
 
 function App() {
   const { user } = useGetDataUser();
@@ -20,6 +21,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/users/:userId" element={<UserDetail/>} />
       </Routes>
     </BrowserRouter>
   );
