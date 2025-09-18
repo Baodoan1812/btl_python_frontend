@@ -28,3 +28,18 @@ export const sendMessage = async (conversationId, content) => {
         throw error.response?.data || { message: "Failed to send message" };
     }
 }
+export const getMessageChatbot = async (message) => {
+    try {
+        const res = await chat.post('/chatbot-reply/', {
+            message: message
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        throw error.response?.data || { message: "Failed to get chatbot message" };
+    }
+
+}

@@ -2,18 +2,24 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useGetDataUser from "../hooks/useGetDataUser";
 import { getUsers } from "../services/authService";
-
+import { createChatbotConversation } from "../services/conversation";
+import { useNavigate } from "react-router-dom";
 export default function Home() {
   const { user } = useGetDataUser();
   const [users, setUsers] = useState<any[]>([]);
   const currentUserId = user?.id; // ví dụ: id của mình, bạn có thể lấy từ context hoặc props
 
   const [search, setSearch] = useState("");
-
+  const Navigate = useNavigate();
   // Lọc users theo search (không phân biệt hoa thường)
   const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(search.toLowerCase())
   );
+  const handleChatbot = async() => {
+    const res=await createChatbotConversation();
+    console.log('res', res);
+    Navigate(`/chat?conversationId=${res.conversation_id}&otherName=Chatbot`);
+  };
   useEffect(() => {
     if (!currentUserId) return;
     const fetchUsers = async () => {
@@ -36,6 +42,7 @@ export default function Home() {
 
       <div className="bg-white p-4 rounded-lg shadow-md w-80">
         <h2 className="text-xl font-semibold mb-3">Users</h2>
+        <button onClick={handleChatbot}>Chatbot</button>
         <input
           type="text"
           placeholder="Search user..."

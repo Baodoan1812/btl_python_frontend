@@ -31,3 +31,20 @@ export const createConversation = async (otherId) => {
     throw error.response?.data || { message: "Failed to create conversation" };
   }
 }
+export const createChatbotConversation = async () => {
+  try {
+    const res= await chat.post(
+      "/start-chatbot/",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    // console.log('res', res.data);
+    return res.data; // conversation mới tạo
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to create conversation" };
+  }
+}

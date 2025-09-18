@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { getMessages, sendMessage } from "../services/message";
+import { getMessages, sendMessage, getMessageChatbot } from "../services/message";
 
 export default function ChatWindow({ currentId }) {
   const [searchParams] = useSearchParams();
@@ -84,23 +84,33 @@ export default function ChatWindow({ currentId }) {
 
     try {
       // Gọi API gửi tin nhắn
-      const msg = await sendMessage(Number(conversationId), newMessage);
-      // const formatted = {
-      //   ...msg,
-      //   isMe: msg.sender === currentId, // luôn check lại
-      // };
-      // setMessages((prev) => [...prev, formatted]);
+      if(otherName === "Chatbot"){
+      // const msg = await sendMessage(Number(conversationId), newMessage);
       const msgData = {
         sender: currentId,
-        message: newMessage, // 👈 đổi content → message
+        isMe: true,
+        content: newMessage, // 👈 đổi content → message
       };
-      
-      console.log("Sending:", msgData);
-      
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(msgData)); // 👈 stringify
-      } else {
-        console.warn("⚠️ WebSocket not ready:", socket.readyState);
+      setMessages((prev) => [...prev, msgData]);
+        const res= await getMessageChatbot(newMessage);
+      console.log("Chatbot response:", res);
+      const botMsg = { sender: "bot", content: res.reply };
+      setMessages((prev) => [...prev, botMsg]);
+      }
+      else{
+      const msg = await sendMessage(Number(conversationId), newMessage);
+        const msgData = {
+          sender: currentId,
+          message: newMessage, // 👈 đổi content → message
+        };
+        
+        console.log("Sending:", msgData);
+        
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify(msgData)); // 👈 stringify
+        } else {
+          console.warn("⚠️ WebSocket not ready:", socket.readyState);
+        }
       }
       setNewMessage("");
     } catch (err) {
