@@ -4,10 +4,16 @@ import useGetDataUser from "../hooks/useGetDataUser";
 import { getUsers } from "../services/authService";
 
 export default function Home() {
-    const { user } = useGetDataUser();
+  const { user } = useGetDataUser();
   const [users, setUsers] = useState<any[]>([]);
   const currentUserId = user?.id; // ví dụ: id của mình, bạn có thể lấy từ context hoặc props
 
+  const [search, setSearch] = useState("");
+
+  // Lọc users theo search (không phân biệt hoa thường)
+  const filteredUsers = users.filter((user) =>
+    user.username.toLowerCase().includes(search.toLowerCase())
+  );
   useEffect(() => {
     if (!currentUserId) return;
     const fetchUsers = async () => {
@@ -30,8 +36,15 @@ export default function Home() {
 
       <div className="bg-white p-4 rounded-lg shadow-md w-80">
         <h2 className="text-xl font-semibold mb-3">Users</h2>
-        <ul className="space-y-2 overflow-y-auto">
-          {users.map((user) => (
+        <input
+          type="text"
+          placeholder="Search user..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+        />
+        <ul className="space-y-2 overflow-y-auto max-h-[400px]">
+          {filteredUsers.map((user) => (
             <li key={user.id}>
               <Link
                 to={`/users/${user.id}`}
@@ -41,6 +54,10 @@ export default function Home() {
               </Link>
             </li>
           ))}
+
+          {filteredUsers.length === 0 && (
+            <li className="text-gray-500 italic">No users found</li>
+          )}
         </ul>
       </div>
     </div>

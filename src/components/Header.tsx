@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 
 export default function Header({ user }) {
+  const handleLogOut=()=>{
+    localStorage.removeItem("token");
+    window.location.href="/";
+  }
   return (
     <nav className="flex gap-4 p-4 bg-gray-200">
       <Link to="/" className="text-blue-600 hover:underline">
@@ -27,7 +31,9 @@ export default function Header({ user }) {
           Chat
         </Link>
       )}
-
+       {user && (
+        <button onClick={handleLogOut}>Log out</button>
+      )}
     </nav>
   );
 }
