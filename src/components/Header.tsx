@@ -1,39 +1,59 @@
 import { Link } from "react-router-dom";
 
 export default function Header({ user }) {
-  const handleLogOut=()=>{
+  const handleLogOut = () => {
     localStorage.removeItem("token");
-    window.location.href="/";
-  }
+    window.location.href = "/";
+  };
+
   return (
-    <nav className="flex gap-4 p-4 bg-gray-200">
-      <Link to="/" className="text-blue-600 hover:underline">
-        Home
+    <nav className="flex items-center justify-between bg-gradient-to-r from-blue-400 to-indigo-500 text-white p-4 shadow-md">
+      {/* Logo / Brand */}
+      <Link to="/" className="text-2xl font-bold hover:text-gray-200 transition">
+        MyApp
       </Link>
 
-      {!user && (
-        <Link to="/login" className="text-blue-600 hover:underline">
-          Login
+      {/* Navigation Links */}
+      <div className="flex items-center gap-6">
+        <Link to="/" className="hover:text-gray-200 transition">
+          Home
         </Link>
-      )}
 
-      {user && (
-        <span>Welcome, {user.username}</span>
-        
-      )}
-       {!user && (
-        <Link to="/register" className="text-blue-600 hover:underline">
-          Register
-        </Link>
-      )}
-       {user && (
-        <Link to="/chat" className="text-blue-600 hover:underline">
-          Chat
-        </Link>
-      )}
-       {user && (
-        <button onClick={handleLogOut}>Log out</button>
-      )}
+        {!user && (
+          <>
+            <Link
+              to="/login"
+              className="bg-white text-blue-500 px-3 py-1 rounded-lg hover:bg-gray-100 transition"
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="bg-white text-blue-500 px-3 py-1 rounded-lg hover:bg-gray-100 transition"
+            >
+              Register
+            </Link>
+          </>
+        )}
+
+        {user && (
+          <>
+            <span className="mr-4">Welcome, <b>{user.username}</b></span>
+            <Link
+              to="/chat"
+              className="bg-white text-blue-500 px-3 py-1 rounded-lg hover:bg-gray-100 transition"
+            >
+              Chat
+            </Link>
+            <button
+              onClick={handleLogOut}
+              className="bg-red-500 px-3 py-1 rounded-lg hover:bg-red-600 transition"
+            >
+              Log out
+            </button>
+          </>
+        )}
+      </div>
     </nav>
   );
 }
