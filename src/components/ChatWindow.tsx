@@ -72,7 +72,8 @@ export default function ChatWindow({ currentId }) {
       } else {
         const msgData = { sender: currentId, message: newMessage };
         if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(msgData));
-        setMessages((prev) => [...prev, { ...msgData, isMe: true, content: newMessage }]);
+        await sendMessage(conversationId, newMessage);
+        // setMessages((prev) => [...prev, { ...msgData, isMe: true, content: newMessage }]);
       }
       setNewMessage("");
     } catch (err) {
